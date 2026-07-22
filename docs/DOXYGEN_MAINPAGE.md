@@ -31,7 +31,17 @@ This page is meant to keep the generated Doxygen output useful instead of turnin
 - [Contributing](CONTRIBUTING.md)
 - Project rules, architectural boundaries, and documentation workflow.
 
-### 6. API reference
+### 6. Submodule consumption contract
+
+- [Submodule Consumption Contract](SUBMODULE_CONTRACT.md)
+- Official policy for release-only pinning, semver compatibility, CI drift checks, and downstream update workflow.
+
+### 7. End-of-phase workflow
+
+- [End-of-Phase Workflow](END_OF_PHASE_WORKFLOW.md)
+- Required phase-closing process, including semver bumping and post-acceptance tag/release publication.
+
+### 8. API reference
 
 - Use the generated module, namespace, type, and file pages in the Doxygen sidebar and index pages.
 - The generated module page for the aggregator is [core module](module__core.html).
@@ -91,8 +101,10 @@ If your focus is the base layer specifically, the fastest path is:
 3. [Future Enhancements](FUTURE_ENHANCEMENTS.md)
 4. [Core Modules Guide](CORE_MODULES_GUIDE.md)
 5. [Contributing](CONTRIBUTING.md)
-6. [core module API](module__core.html)
-7. [core_hash_map module API](module__core__hash__map.html)
+6. [Submodule Consumption Contract](SUBMODULE_CONTRACT.md)
+7. [End-of-Phase Workflow](END_OF_PHASE_WORKFLOW.md)
+8. [core module API](module__core.html)
+9. [core_hash_map module API](module__core__hash__map.html)
 
 That sequence gives you the design constraints first, then the module map, then the exact implementation surface.
 

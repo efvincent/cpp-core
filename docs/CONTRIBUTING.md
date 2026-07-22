@@ -30,6 +30,8 @@ If a feature does not fit one of those layers cleanly, it probably needs a new m
 - Keep module guides, roadmaps, and architecture notes aligned with the source.
 - Prefer Doxygen comments for API-level facts and Markdown for design rationale.
 - If a public module name, namespace, or import path changes, update the generated and authored docs together.
+- Keep downstream consumption policy aligned with [SUBMODULE_CONTRACT.md](SUBMODULE_CONTRACT.md).
+- Keep the reusable CI check template aligned with `docs/templates/verify_submodule_pin.sh`.
 
 ## Change Style
 
@@ -45,6 +47,11 @@ If a feature does not fit one of those layers cleanly, it probably needs a new m
 3. Rebuild the relevant mode.
 4. Regenerate docs if the change affects public surface or documentation.
 5. Verify the result with a focused test or build command.
+
+## End-of-Phase Rule
+
+- The phase-closing workflow is mandatory and is defined in [END_OF_PHASE_WORKFLOW.md](END_OF_PHASE_WORKFLOW.md).
+- In `cpp-core`, this includes semver bump selection plus a new tag and GitHub Release after acceptance.
 
 ## README and Docs Index
 

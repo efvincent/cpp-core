@@ -23,7 +23,13 @@ This README is the documentation index and recommended reading path for the core
 5. [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)
    - Project rules, architectural boundaries, and documentation workflow guidance.
 
-6. Doxygen API reference
+6. [docs/SUBMODULE_CONTRACT.md](docs/SUBMODULE_CONTRACT.md)
+   - Official contract for downstream submodule pinning, semver compatibility expectations, CI drift checks, and update workflow.
+
+7. [docs/END_OF_PHASE_WORKFLOW.md](docs/END_OF_PHASE_WORKFLOW.md)
+   - Required phase-closing process, including semver bump selection and post-acceptance tag/release steps.
+
+8. Doxygen API reference
    - Rendered landing page: [docs/html/index.html](docs/html/index.html)
    - Authored entry page: [docs/DOXYGEN_MAINPAGE.md](docs/DOXYGEN_MAINPAGE.md)
    - Configuration: [docs/Doxyfile](docs/Doxyfile)
