@@ -1,0 +1,13 @@
+# Build artifacts
+build/
+compile_commands.json
+
+# Generated Doxygen output
+docs/html/
+docs/latex/
+docs/man/
+docs/xml/
+
+# Local workspace/editor state
+.cache/
+.vscode/
