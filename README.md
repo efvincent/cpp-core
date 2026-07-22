@@ -44,7 +44,7 @@ The rendered Doxygen site uses a dedicated Markdown landing page so authored des
 
 ## Versioning
 
-- Current baseline: `v1.0.0`
+- Current baseline: `v1.0.1`
 - Semantic version tags should follow the `vMAJOR.MINOR.PATCH` pattern.
 - Tagged releases are expected to mark the immutable baseline for downstream consumers.
 
