@@ -101,6 +101,28 @@ export namespace base::lex {
       end_offset
     };
   } 
+    
+  // -- Inline character traits --
+
+  /** @brief ASCII alphabetic predicate. */
+  constexpr bool is_alpha(u8 c) {
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+  }
+
+  /** @brief ASCII decimal digit predicate. */
+  constexpr bool is_numeric(u8 c) {
+    return (c >= '0' && c <= '9');
+  }
+
+  /** @brief ASCII alphanumeric predicate. */
+  constexpr bool is_alphanumeric(u8 c) {
+    return is_alpha(c) || is_numeric(c);
+  }
+
+  /** @brief Whitespace predicate for ASCII space controls. */
+  constexpr bool is_whitespace(u8 c) {
+    return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+  }
 
   /**
    * @ingroup LexerCore
@@ -142,28 +164,6 @@ export namespace base::lex {
     /** @brief Check whether cursor reached end-of-input. */
     constexpr bool is_eof() {
       return this->offset >= this->input.len;
-    }
-
-    // -- Inline character traits --
-
-    /** @brief ASCII alphabetic predicate. */
-    constexpr bool is_alpha(u8 c) {
-      return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-    }
-
-    /** @brief ASCII decimal digit predicate. */
-    constexpr bool is_numeric(u8 c) {
-      return (c >= '0' && c <= '9');
-    }
-
-    /** @brief ASCII alphanumeric predicate. */
-    constexpr bool is_alphanumeric(u8 c) {
-      return is_alpha(c) || is_numeric(c);
-    }
-
-    /** @brief Whitespace predicate for ASCII space controls. */
-    constexpr bool is_whitespace(u8 c) {
-      return c == ' ' || c == '\t' || c == '\n' || c == '\r';
     }
 
     // -- Zero-allocation scanners
@@ -442,7 +442,7 @@ export namespace base::lex {
     while (!cursor.is_eof()) {
 
       // skip standard whitespace
-      if (cursor.is_whitespace(cursor.peek())) {
+      if (is_whitespace(cursor.peek())) {
         cursor.offset++;
         continue; // outer while
       }

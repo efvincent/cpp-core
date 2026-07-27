@@ -186,7 +186,7 @@ export namespace base::lex {
   constexpr ParseResult<u8> skip_trivia(Str8Cursor& cursor, TriviaConfig config, DiagBuffer& diags) {
     while (!cursor.is_eof()) {
       // skip standard whitespace
-      if (cursor.is_whitespace(cursor.peek())) {
+      if (is_whitespace(cursor.peek())) {
         cursor.offset++;
         continue;  // while(!cursor.is_eof)
       }
