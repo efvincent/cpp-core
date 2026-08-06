@@ -13,7 +13,7 @@
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "core"
 PROJECT_BRIEF          = "Foundational C++26 modules and authored design notes for low-level systems work."
-PROJECT_NUMBER         = 1.0.1
+PROJECT_NUMBER         = 1.1.0
 OUTPUT_DIRECTORY       = docs
 CREATE_SUBDIRS         = NO
 ALLOW_UNICODE_NAMES    = NO
