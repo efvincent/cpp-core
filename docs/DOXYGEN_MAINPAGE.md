@@ -45,7 +45,7 @@ This page is meant to keep the generated Doxygen output useful instead of turnin
 
 - Use the generated module, namespace, type, and file pages in the Doxygen sidebar and index pages.
 - The generated module page for the aggregator is [core module](module__core.html).
-- The generated module pages for foundational units are [core_types](module__core__types.html), [core_memory](module__core__memory.html), [core_string](module__core__string.html), [core_hash](module__core__hash.html), and [core_hash_map](module__core__hash__map.html).
+- The generated module pages for foundational units are [core_types](module__core__types.html), [core_algorithm](module__core__algorithm.html), [core_memory](module__core__memory.html), [core_string](module__core__string.html), [core_hash](module__core__hash.html), and [core_hash_map](module__core__hash__map.html).
 - The generated namespace pages for low-level APIs are under the `base` namespace tree.
 
 ## Documentation Layers
@@ -76,6 +76,7 @@ They answer questions like:
 
 - Arena allocation is explicit and low-level.
 - Portability and VM boundaries are separated into dedicated core modules.
+- Generic sorting helpers are centralized in `core_algorithm`.
 - Strings, results, hashes, and containers are modeled as separate layers.
 - The aggregator module re-exports the lower-level module set directly.
 
@@ -85,6 +86,7 @@ If you want to jump directly into generated reference material, these are the mo
 
 - Core module page: `docs/html/module__core.html`
 - Types module page: `docs/html/module__core__types.html`
+- Algorithm module page: `docs/html/module__core__algorithm.html`
 - Memory module page: `docs/html/module__core__memory.html`
 - String module page: `docs/html/module__core__string.html`
 - Hash module page: `docs/html/module__core__hash.html`

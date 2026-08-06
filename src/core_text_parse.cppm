@@ -364,9 +364,17 @@ export namespace base::parse {
   /** @brief Parse `Str8` into `i64`. */
   constexpr ParseResult<i64> parse_i64(Str8 t) { return parse_int_impl<i64>(t); }  
 
+  /**
+   * @brief Parses a null-terminated C-string into an integer target type.
+   * @tparam T Target integer type.
+   * @param cstr Null-terminated source string.
+   * @return Parsed integer value or parse diagnostics from the Str8 parser.
+    * @note Null input is treated as empty input and returns parse diagnostics.
+   * @note This adapter converts via from_cstr(cstr), which performs an O(N) scan.
+   */
   template <typename T>
   constexpr ParseResult<T> parse_int_impl(const char* cstr) {
-    auto str = Str8::from_cstr(cstr);
+    auto str = from_cstr(cstr);
     return parse_int_impl<T>(str);
   }
 

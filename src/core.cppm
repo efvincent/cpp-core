@@ -1,3 +1,12 @@
+/**
+ * @file core.cppm
+ * @brief Aggregator module that re-exports the core foundational modules.
+ */
+
+/**
+ * @module core
+ * @brief Convenience import surface for downstream consumers.
+ */
 export module core;
 
 // Layer 0: Primitives & portability
@@ -5,6 +14,7 @@ export import core_types;
 export import core_portability;
 export import core_option;
 export import core_result;
+export import core_algorithm;
 
 // Layer 1: Memory & State
 export import core_memory;
