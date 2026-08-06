@@ -13,13 +13,14 @@ The base layer is built around a small set of modules that each own a distinct c
 At a high level:
 
 1. `core_types` defines the project's scalar vocabulary.
-2. `core_vm` owns operating-system virtual memory boundaries.
-3. `core_portability` owns compiler and standard-library portability shims.
-4. `core_memory` builds the arena allocator on top of those lower layers.
-5. `core_result` and `core_result_s` define explicit success/failure return types.
-6. `core_string` provides `Str8`, formatting, and string-centric primitives.
-7. `core_hash` defines hashing traits over supported key types.
-8. `core_hash_map` builds the arena-backed hash containers.
+2. `core_algorithm` provides reusable in-place sorting and comparator helpers.
+3. `core_vm` owns operating-system virtual memory boundaries.
+4. `core_portability` owns compiler and standard-library portability shims.
+5. `core_memory` builds the arena allocator on top of those lower layers.
+6. `core_result` and `core_result_s` define explicit success/failure return types.
+7. `core_string` provides `Str8`, formatting, and string-centric primitives.
+8. `core_hash` defines hashing traits over supported key types.
+9. `core_hash_map` builds the arena-backed hash containers.
 
 ## Module Dependency DAG
 
@@ -30,6 +31,7 @@ digraph module_dependency_dag {
 	rankdir=TB;
 	node [shape=box, style=rounded];
 
+	core_algorithm -> core_types;
 	core_portability -> core_types;
 	core_vm -> core_types;
 	core_result -> core_types;
@@ -106,7 +108,14 @@ These modules separate two kinds of platform concerns:
 
 That split matters for understanding how the arena remains simple while still being correct.
 
-### 3. Arena allocation
+### 3. Generic algorithms
+
+- [core_algorithm module API](module__core__algorithm.html)
+- [core_algorithm file API](core__algorithm_8cppm.html)
+
+Use this module for reusable in-place sorting primitives such as insertion sort and quicksort over caller-owned buffers.
+
+### 4. Arena allocation
 
 - [core_memory module API](module__core__memory.html)
 - [core_memory file API](core__memory_8cppm.html)
@@ -116,7 +125,7 @@ This is the allocation foundation used by most higher-level transient data struc
 
 If you are reading the hash table, you should understand the arena first.
 
-### 4. Result types
+### 5. Result types
 
 - [core_result module API](module__core__result.html)
 - [core_result file API](core__result_8cppm.html)
@@ -127,7 +136,7 @@ These modules define the project's explicit error-reporting style.
 
 The hash map uses this pattern directly through `HashMapE` and `HashMapR<T>`.
 
-### 5. Strings and slices
+### 6. Strings and slices
 
 - [core_string module API](module__core__string.html)
 - [core_string file API](core__string_8cppm.html)
@@ -135,7 +144,7 @@ The hash map uses this pattern directly through `HashMapE` and `HashMapR<T>`.
 
 `Str8` is one of the most important data types in the project. It is both a common runtime string representation and one of the supported hash-key types.
 
-### 6. Hash traits and containers
+### 7. Hash traits and containers
 
 - [core_hash module API](module__core__hash.html)
 - [core_hash file API](core__hash_8cppm.html)

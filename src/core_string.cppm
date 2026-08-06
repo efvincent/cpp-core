@@ -78,15 +78,6 @@ export namespace base::str {
     }
 
     /**
-     * @brief Creates a Str8 view from a null-terminated C-string.
-     * @warning This performs an O(N) strlen calculation.
-     */
-    static constexpr Str8 from_cstr(const char* cstr) {
-      if (!cstr) return Str8{};
-      return Str8(reinterpret_cast<u8*>(const_cast<char*>(cstr)), static_cast<u64>(strlen(cstr)));
-    }
-
-    /**
      * @brief Constructs a view from a string literal, excluding trailing null.
      * @tparam N Literal array length including null terminator.
      * @post len is N - 1.
@@ -142,6 +133,15 @@ export namespace base::str {
     }
 
     /**
+    * @brief Byte-wise equality comparison between two Str8 views.
+    * @param other Comparison target string view.
+    * @return True if lengths and bytes are equal.
+    */
+    constexpr bool operator==(Str8 other) const {
+      return this->match(other);
+    }
+
+    /**
     * @brief Computes the 64-bit FNV-1a hash of this string view.
     * @return 64-bit hash value.
     * @note Hash is stable for identical byte sequences.
@@ -154,7 +154,47 @@ export namespace base::str {
       }
       return hash;
     }
-  };
+  };   // ** END: struct Str8
+
+  /**
+   * @brief Creates a Str8 view from pointer plus explicit byte length.
+   * @param cstr Pointer to first byte.
+   * @param len Number of bytes to expose in the view.
+   * @return Non-owning Str8 view over exactly `len` bytes.
+   * @note This overload does not scan for a terminator and is O(1).
+   */
+  constexpr Str8 from_cstr(const char* cstr, u64 len) {
+    if (!cstr) return Str8{};
+    return Str8(reinterpret_cast<u8*>(const_cast<char*>(cstr)), len); 
+  }
+
+  /**
+    * @brief Creates a Str8 view from a null-terminated C-string.
+    * @param cstr Null-terminated source string.
+    * @return Non-owning Str8 view over bytes before the trailing null.
+    * @note Returns an empty Str8 when cstr is null.
+    * @warning This performs an O(N) strlen calculation.
+    */
+  constexpr Str8 from_cstr(const char* cstr) {
+    if (!cstr) return Str8{};
+    return from_cstr(cstr, strlen(cstr));
+  }
+
+  /**
+   * @brief Creates a Str8 view from a compile-time char array.
+   * @tparam N Array length including the trailing null terminator.
+   * @param arr Source char array.
+   * @return Non-owning Str8 view with length `N - 1`.
+   * @note This overload avoids runtime scanning and is O(1).
+   */
+  template<u64 N>
+  constexpr Str8 from_cstr(const char(&arr)[N]) {
+    if (N <= 0) return Str8{};
+    return Str8(
+      reinterpret_cast<u8*>(const_cast<char*>(arr)),
+      static_cast<u64>(N - 1) // exclude trailing '\0'
+    );
+  }
 
   /**
    * @brief Extracts the next delimiter-separated segment from a string view.

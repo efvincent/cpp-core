@@ -61,7 +61,7 @@ export namespace base::console {
   // Output
   // ==========================================================================
 
-    /**
+  /**
    * @brief Maps string formatting errors to console write errors.
    */
   constexpr ConsoleWriteError map_string_error_to_console(StringFormatError e) {
@@ -75,17 +75,28 @@ export namespace base::console {
   }
 
   /**
+   * @brief Writes bytes to specified file with result checking.
+   * @param text Bytes to write.
+   * @param f File to write to.
+   * @param errType Should the write fail, the error type to return.
+    * @return Ok(bytes_written) or Err(errType).
+   */
+  inline ConsoleWriteResult write(Str8 text, FILE *__restrict f, ConsoleWriteError errType) {
+    if (text.len == 0) return ConsoleWriteResult::ok(0);
+    u64 written = static_cast<u64>(fwrite(text.str, 1, text.len, f));
+    if (written != text.len) {
+      return ConsoleWriteResult::err(errType);
+    }
+    return ConsoleWriteResult::ok(written);
+  }
+
+  /**
    * @brief Writes bytes to stdout with result checking.
    * @param text Bytes to write.
    * @return Ok(bytes_written) or Err(ConsoleWriteError::StdoutWriteFailed).
    */
   inline ConsoleWriteResult write_stdout(Str8 text) {
-    if (text.len == 0) return ConsoleWriteResult::ok(0);
-    u64 written = static_cast<u64>(fwrite(text.str, 1, text.len, stdout));
-    if (written != text.len) {
-      return ConsoleWriteResult::err(ConsoleWriteError::StdoutWriteFailed);
-    }
-    return ConsoleWriteResult::ok(written);
+    return write(text, stdout, ConsoleWriteError::StdoutWriteFailed);
   }
 
   /**
@@ -94,12 +105,7 @@ export namespace base::console {
    * @return Ok(bytes_written) or Err(ConsoleWriteError::StderrWriteFailed).
    */
   inline ConsoleWriteResult write_stderr(Str8 text) {
-    if (text.len == 0) return ConsoleWriteResult::ok(0);
-    u64 written = static_cast<u64>(fwrite(text.str, 1, text.len, stderr));
-    if (written != text.len) {
-      return ConsoleWriteResult::err(ConsoleWriteError::StderrWriteFailed);
-    }
-    return ConsoleWriteResult::ok(written);
+    return write(text, stderr, ConsoleWriteError::StderrWriteFailed);
   }
 
   /**
@@ -239,6 +245,25 @@ export namespace base::console {
   // ==========================================================================
   // Input
   // ==========================================================================
+
+  /**
+   * @brief Prompts and waits for a single input character.
+   * @note Intended for interactive pause points in terminal programs.
+   */
+  inline void pause() {
+    fputs("press any key to continue...", stdout);
+    fflush(stdout);
+    (void)getchar();
+  }
+  
+  /**
+   * @brief Clears the terminal and moves the cursor to the home position.
+   * @note Uses ANSI escape sequences.
+   */
+  void cls() {
+    fputs("\033[2J\033[H", stdout);
+    flush_console();
+  }
 
   /**
    * @brief Reads one line from stdin into arena-backed storage.

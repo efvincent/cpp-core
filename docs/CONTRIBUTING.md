@@ -17,6 +17,7 @@ The core repository is a low-level foundation for Orthodox C++ style projects. C
 ## Module Boundaries
 
 - `core_types` owns scalar aliases and tiny arithmetic helpers.
+- `core_algorithm` owns reusable sorting and comparator primitives.
 - `core_portability` owns compiler and standard-library shims.
 - `core_vm` owns operating-system virtual memory behavior.
 - `core_memory` owns arena policy and allocation mechanics.
