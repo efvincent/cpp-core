@@ -13,9 +13,9 @@ The base layer is built around a small set of modules that each own a distinct c
 At a high level:
 
 1. `core_types` defines the project's scalar vocabulary.
-2. `core_algorithm` provides reusable in-place sorting and comparator helpers.
-3. `core_vm` owns operating-system virtual memory boundaries.
-4. `core_portability` owns compiler and standard-library portability shims.
+2. `core_vm` owns operating-system virtual memory boundaries.
+3. `core_portability` owns compiler and standard-library portability shims.
+4. `core_algorithm` provides reusable in-place sorting and comparator helpers.
 5. `core_memory` builds the arena allocator on top of those lower layers.
 6. `core_result` and `core_result_s` define explicit success/failure return types.
 7. `core_string` provides `Str8`, formatting, and string-centric primitives.

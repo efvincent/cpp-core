@@ -251,7 +251,7 @@ export namespace base::console {
    * @note Intended for interactive pause points in terminal programs.
    */
   inline void pause() {
-    fputs("press any key to continue...", stdout);
+    fputs("press Enter to continue...", stdout);
     fflush(stdout);
     (void)getchar();
   }
