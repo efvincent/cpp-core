@@ -60,7 +60,7 @@ export namespace base::str {
     }
 
     /**
-     * @brief Constructs a string view from raw pointer and explicit length.
+     * @brief Constructs a string view from raw u8 pointer and explicit length.
      * @param target_str Pointer to first byte.
      * @param target_len Length in bytes.
      * @post The instance references the provided memory without owning it.
@@ -69,24 +69,57 @@ export namespace base::str {
       this->str = target_str;
       this->len = target_len;
     }
+    
+    /**
+     * @brief Constructs a string view from a raw pointer, using strlen to determine length 
+     * @param target_str Pointer to the first byte
+     * @post The instance reference the provided memory without owning it
+     */
+    constexpr Str8(u8* target_str) {
+      this->str = target_str;
+      this->len = strlen((char*)target_str);
+    }
 
-    constexpr Str8(Arena& arena, u64 target_len) {
-      auto buffer = arena.alloc_array<u8>(target_len);
+    /**
+     * @brief Constructs a string view from raw char pointer and explicit length.
+     * @param target_str Pointer to first byte.
+     * @param target_len Length in bytes.
+     * @post The instance references the provided memory without owning it.
+     */
+    constexpr Str8(char* target_str) : Str8((u8*)target_str) { }
+
+    /**
+     * @brief Constructs an empty string view of target length, allocating the space from
+     * the supplied arena. Optionally zero out the contents.
+     * @param arena A reference to the arena to use for allocation of the string
+     * @param zero_out_contents Set to true to zero out the contents of the string. 
+     * Defaults to false.
+     */
+    constexpr Str8(Arena& arena, u64 target_len, bool zero_out_contents = false) {
+      auto buffer = arena.alloc_array<u8>(target_len, zero_out_contents);
       BASE_ASSERT(buffer != nullptr);
       this->str = buffer;
       this->len = target_len;
     }
 
     /**
-     * @brief Constructs a view from a string literal, excluding trailing null.
+     * @brief Constructs a view from a C string defined as an array, excluding trailing null.
+     * @note Used with both string literals and strings defined as null terminated array of @ref char "char".
      * @tparam N Literal array length including null terminator.
      * @post len is N - 1.
      */
     template<u64 N>
     constexpr Str8(const char (&literal)[N]) {
-      this->str = reinterpret_cast<u8*>(const_cast<char*>(literal));
-      this->len = N - 1;    // Omit the null terminator
+      auto const_literal = const_cast<char*>(literal);
+      this->str = reinterpret_cast<u8*>(const_literal);
+      this->len = strlen(const_literal);    // Omit the null terminator
     }
+
+    /**
+     * @brief Constructs a view from a C string defined as a standard null-terminated C string.
+     * @tparam Literal array length including null terminator.
+     */
+    constexpr Str8(const char* literal) : Str8(const_cast<char*>(literal)) { }
 
     /**
      * @brief Constructs a null terminated c-string from a Str8
@@ -132,6 +165,15 @@ export namespace base::str {
       return true;
     }
 
+    constexpr u32 compare(Str8 other) const {
+      u64 min_len = this->len < other.len ? this->len : other.len;
+      int cmp = memcmp(this->str, other.str, min_len);
+      if (cmp != 0) {
+        return cmp;
+      }
+      return (this->len > other.len) - (this->len < other.len);
+    }
+
     /**
     * @brief Byte-wise equality comparison between two Str8 views.
     * @param other Comparison target string view.
@@ -167,7 +209,7 @@ export namespace base::str {
     if (!cstr) return Str8{};
     return Str8(reinterpret_cast<u8*>(const_cast<char*>(cstr)), len); 
   }
-
+  
   /**
     * @brief Creates a Str8 view from a null-terminated C-string.
     * @param cstr Null-terminated source string.
