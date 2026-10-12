@@ -23,6 +23,7 @@ export import core_string;
 // Layer 2: Utilities & Data Structures
 export import core_hash;
 export import core_hash_map;
+export import core_arraylist;
 
 // Layer 3: Parsing & I/O
 export import core_text_parse;
