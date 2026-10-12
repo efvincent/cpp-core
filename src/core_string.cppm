@@ -38,7 +38,10 @@ export namespace base::str {
     Truncated
   };
 
+  // Forward declare Str8 data structure
   struct Str8;
+
+  // Alias for string formatting results
   using StringFormatResult = Result<StringFormatError, Str8>;
 
   /**
@@ -46,7 +49,8 @@ export namespace base::str {
    * @note The view is not null-terminated by contract.
    * @note Lifetime is owned externally, commonly by Arena.
    */
-  struct Str8 {
+  struct Str8 { 
+    
     /** @brief Pointer to first byte of the string view. */
     u8* str;
     /** @brief Number of bytes in the view. */
@@ -157,7 +161,7 @@ export namespace base::str {
     * @param other Comparison target string view.
     * @return True if lengths and bytes are equal.
     */
-    constexpr bool match(Str8 other) const {
+    constexpr bool match(const Str8& other) const {
       if (this->len != other.len) return false;
       for (u64 i = 0; i < this->len; i++) {
         if (this->str[i] != other.str[i]) return false;
@@ -179,7 +183,7 @@ export namespace base::str {
     * @param other Comparison target string view.
     * @return True if lengths and bytes are equal.
     */
-    constexpr bool operator==(Str8 other) const {
+    constexpr bool operator==(const Str8& other) const {
       return this->match(other);
     }
 
@@ -209,17 +213,48 @@ export namespace base::str {
     if (!cstr) return Str8{};
     return Str8(reinterpret_cast<u8*>(const_cast<char*>(cstr)), len); 
   }
+
+  /**
+   * @brief Allocates from an Arena and copies an explicit number of bytes.
+   * @param arena The arena to allocate the new buffer from.
+   * @param cstr Pointer to the first byte of the source string.
+   * @param len Number of bytes to allocate and copy.
+   * @return A new Str8 backed by arena-allocated memory.
+   * @note Allocates `len + 1` bytes and explicitly appends a null terminator.
+   */
+  constexpr Str8 copy_cstr(Arena& arena, const char* cstr, u64 len) {
+    if (!cstr) return Str8{};
+    u8* buffer = arena.alloc_array<u8>(len + 1);
+    memcpy(buffer, cstr, len);
+    buffer[len] = 0;
+    return Str8(buffer, len);
+  }  
   
   /**
-    * @brief Creates a Str8 view from a null-terminated C-string.
-    * @param cstr Null-terminated source string.
-    * @return Non-owning Str8 view over bytes before the trailing null.
-    * @note Returns an empty Str8 when cstr is null.
-    * @warning This performs an O(N) strlen calculation.
-    */
+   * @brief Creates a Str8 view from a null-terminated C-string.
+   * @param cstr Null-terminated source string.
+   * @return Non-owning Str8 view over bytes before the trailing null.
+   * @note Returns an empty Str8 when cstr is null.
+   * @warning This performs an O(N) strlen calculation.
+   */
   constexpr Str8 from_cstr(const char* cstr) {
     if (!cstr) return Str8{};
     return from_cstr(cstr, strlen(cstr));
+  }
+
+  /**
+   * @brief Allocates from an Arena and copies a null-terminated C-string.
+   * @param arena The arena to allocate the new buffer from.
+   * @param cstr Null-terminated source string.
+   * @return A new Str8 backed by arena-allocated memory.
+   * @warning Performs an O(N) strlen calculation followed by an O(N) memory copy.
+   */
+  constexpr Str8 copy_cstr(Arena& arena, const char* cstr) {
+    if (!cstr) return Str8{};
+    u64 l = strlen(cstr);
+    u8* buffer = arena.alloc_array<u8>(l + 1);
+    memcpy(buffer, cstr, l + 1);
+    return Str8(buffer, l);
   }
 
   /**
@@ -236,6 +271,26 @@ export namespace base::str {
       reinterpret_cast<u8*>(const_cast<char*>(arr)),
       static_cast<u64>(N - 1) // exclude trailing '\0'
     );
+  }
+
+  /**
+   * @brief Allocates from an Arena and copies a compile-time char array.
+   * @tparam N Array length including the trailing null terminator.
+   * @param arena The arena to allocate the new buffer from.
+   * @param arr Source char array.
+   * @return A new Str8 backed by arena-allocated memory with length `N - 1`.
+   * @note Avoids runtime scanning for length. Allocation and copy are proportional to N.
+   */
+  template<u64 N>
+  constexpr Str8 copy_cstr(Arena& arena, const char(&arr)[N]) {
+    if (N <= 0) return Str8{};
+    // allocate space, including for the trailing `\0`
+    auto buffer = arena.alloc_array<u8>(N);
+    memcpy(buffer, arr, N);
+    Str8 s = Str8{};
+    s.str = buffer;
+    s.len = N - 1;
+    return s;
   }
 
   /**
