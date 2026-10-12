@@ -30,7 +30,7 @@ export namespace base::mem {
    * @brief Linear allocator using a single contiguous mapped memory region.
    * @note Supports bump allocation only; individual frees are not available.
    */
-  struct Arena {
+  struct Arena { NON_COPYABLE_NOR_MOVABLE(Arena)
     /** @brief Base pointer to mapped memory; null when uninitialized/freed. */
     u8* buffer;
     /** @brief Total mapped capacity in bytes. */
